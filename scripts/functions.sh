@@ -9,7 +9,6 @@ deploy_azure_spring_apps () {
     --resource-group $RG \
     --template-file .././deploy/bicep/asa.bicep \
     --parameters uniqueServiceName=$UNIQUE_SERVICE_NAME -o table
-    
 }
 
 deploy_azure_kubernetes_service () {

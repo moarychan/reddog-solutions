@@ -7,7 +7,7 @@ export USERNAME=$4
 export ADMIN_PASSWORD=$5
 export DEPLOY_TARGET=$6
 export INCLUDE_OPENAI=$7
-export UNIQUE_SERVICE_NAME=reddog$RANDOM$USERNAME$SUFFIX
+export UNIQUE_SERVICE_NAME=reddog16100$USERNAME$SUFFIX
 export AKS_NAME=aks$UNIQUE_SERVICE_NAME
 
 # show all params
@@ -29,7 +29,7 @@ check_for_azure_login
 # create RG
 echo ''
 echo "Creating Azure Resource Group"
-az group create --name $RG --location $LOCATION -o table
+# az group create --name $RG --location $LOCATION -o table
 
 # Bicep deployment
 echo ''
@@ -37,15 +37,15 @@ echo '****************************************************'
 echo 'Starting Bicep deployment of resources'
 echo '****************************************************'
 
-az deployment group create \
-    --name reddog-backing-services \
-    --mode Incremental \
-    --only-show-errors \
-    --resource-group $RG \
-    --template-file .././deploy/bicep/main.bicep \
-    --parameters uniqueServiceName=$UNIQUE_SERVICE_NAME \
-    --parameters includeOpenAI=$INCLUDE_OPENAI \
-    --parameters adminPassword=$ADMIN_PASSWORD -o table
+# az deployment group create \
+#    --name reddog-backing-services \
+#    --mode Incremental \
+#    --only-show-errors \
+#    --resource-group $RG \
+#    --template-file .././deploy/bicep/main.bicep \
+#    --parameters uniqueServiceName=$UNIQUE_SERVICE_NAME \
+#    --parameters includeOpenAI=$INCLUDE_OPENAI \
+#    --parameters adminPassword=$ADMIN_PASSWORD -o table
 
 # need error handling here
 
@@ -57,7 +57,7 @@ echo ''
 echo '****************************************************'
 echo "Collecting deployment outputs"
 echo '****************************************************'  
-az deployment group show -g $RG -n reddog-backing-services -o json --query properties.outputs > ".././outputs/$RG-bicep-outputs.json"
+# az deployment group show -g $RG -n reddog-backing-services -o json --query properties.outputs > ".././outputs/$RG-bicep-outputs.json"
 
 export COSMOS_URI=$(jq -r .cosmosUri.value .././outputs/$RG-bicep-outputs.json)
 export COSMOS_ACCOUNT=$(jq -r .cosmosAccountName.value .././outputs/$RG-bicep-outputs.json)
@@ -86,7 +86,7 @@ else
 fi
 
 # Write variables to files
-VARIABLES_FILE=".././outputs/var-$RG.sh"
+export VARIABLES_FILE=".././outputs/var-$RG.sh"
 CONFIGMAP_FILE=".././outputs/config-map-$RG.yaml"
 
 printf "export AZURECOSMOSDBURI='%s'\n" $COSMOS_URI >> $VARIABLES_FILE
