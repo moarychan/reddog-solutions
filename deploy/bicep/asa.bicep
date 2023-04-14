@@ -13,23 +13,6 @@ module springApps 'modules/spring-apps.bicep' = {
     logAnalyticsName: logAnalyticsName
     appInsightsName: appInsightsName
     location: location
-    azureCosmosDBUri: azureCosmosDBUri
-    azureCosmosDBKey: azureCosmosDBKey
-    azureCosmosDBDatabaseName: azureCosmosDBDatabaseName
-    kafkaBootstrapServers: kafkaBootstrapServers
-    kafkaSecurityProtocol: kafkaSecurityProtocol
-    kafkaSaslMechanism: kafkaSaslMechanism
-    kafkaTopicName: kafkaTopicName
-    mysqlURL: mysqlURL
-    mysqlUser: mysqlUser
-    mysqlPassword: mysqlPassword
-    azureRedisHost: azureRedisHost
-    azureRedisPort: azureRedisPort
-    azureRedisAccessKey: azureRedisAccessKey
-    azureStorageAccountName: azureStorageAccountName
-    azureStorageAccountKey: azureStorageAccountKey
-    azureStorageEndpoint: azureStorageEndpoint
-    serviceBusConnectionString: serviceBusConnectionString
   }
 }
 

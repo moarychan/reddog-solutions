@@ -57,8 +57,8 @@ This deployment will require a bash shell of your choice. It will not work on Az
     * Script creates an output with the variables needed. Source the file in your `./outputs` directory
 
         ```bash
-        export DEPLOY_UNIQUE_SUFFIX=12345
-        source ./outputs/var-reddog-spring-$DEPLOY_UNIQUE_SUFFIX.sh
+        export DEPLOY_UNIQUE_SUFFIX=reddog-xxx
+        source ./outputs/var-reddog-$DEPLOY_UNIQUE_SUFFIX.sh
         ```
 
 * Run microservices 
@@ -109,8 +109,8 @@ Follow the steps below to deploy Red Dog to your Azure Spring Apps instance depl
     * Script creates an output with the variables needed. Source the file in your `./outputs` directory
 
         ```bash
-        export DEPLOY_UNIQUE_SUFFIX=12345
-        source ./outputs/var-reddog-spring-$DEPLOY_UNIQUE_SUFFIX.sh
+        export DEPLOY_UNIQUE_SUFFIX=reddog-xxx
+        source ./outputs/var-reddog-$DEPLOY_UNIQUE_SUFFIX.sh
         ```
 
 * Deploy order-service:
