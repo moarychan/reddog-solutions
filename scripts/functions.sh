@@ -1,15 +1,45 @@
 # Functions
 
+escape_double_quotes() {
+    local input=$1
+    input="${input//\"/\\\"}"
+    echo "$input"
+}
+
 deploy_azure_spring_apps () {
+    # build backend projects
+    # mvn -f ../pom.xml clean package -DskipTests 
+    # export environment variables
+    echo $VARIABLES_FILE
+    . $VARIABLES_FILE
+    echo $AZURECOSMOSDBURI
+#    kafkasasljaasconfig_escape=$(escape_double_quotes "$KAFKASASLJAASCONFIG")
+#    echo $kafkasasljaasconfig_escape
     # Bicep deploy ASA
     az deployment group create \
     --name reddog-asa \
     --mode Incremental \
-    --only-show-errors \
     --resource-group $RG \
     --template-file .././deploy/bicep/asa.bicep \
-    --parameters uniqueServiceName=$UNIQUE_SERVICE_NAME -o table
-    
+    --parameters uniqueServiceName=$UNIQUE_SERVICE_NAME \
+    --parameters azureCosmosDBUri=$AZURECOSMOSDBURI \
+    --parameters azureCosmosDBKey=$AZURECOSMOSDBKEY \
+    --parameters azureCosmosDBDatabaseName=$AZURECOSMOSDBDATABASENAME \
+    --parameters kafkaBootstrapServers=$KAFKABOOTSTRAPSERVERS \
+    --parameters kafkaSecurityProtocol=$KAFKASECURITYPROTOCOL \
+    --parameters kafkaSaslMechanism=$KAFKASASLMECHANISM \
+    --parameters kafkaTopicName=$KAFKATOPICNAME \
+    --parameters mysqlURL=$MYSQLURL \
+    --parameters mysqlUser=$MYSQLUSER \
+    --parameters mysqlPassword=$MYSQLPASSWORD \
+    --parameters azureRedisHost=$AZUREREDISHOST \
+    --parameters azureRedisPort=$AZUREREDISPORT \
+    --parameters azureRedisAccessKey=$AZUREREDISACCESSKEY \
+    --parameters azureStorageAccountName=$AZURESTORAGEACCOUNTNAME \
+    --parameters azureStorageAccountKey=$AZURESTORAGEACCOUNTKEY \
+    --parameters azureStorageEndpoint=$AZURESTORAGEENDPOINT \
+    --parameters serviceBusConnectionString=$SERVICEBUSCONNECTIONSTRING \
+    -o table --verbose
 }
 
 deploy_azure_kubernetes_service () {

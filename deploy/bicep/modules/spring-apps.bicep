@@ -1,9 +1,59 @@
 param location string
-param springCloudName string
+param springAppsName string
 param logAnalyticsName string
 param appInsightsName string
+// Deployment variables
+@secure()
+param azureCosmosDBUri string
+@secure()
+param azureCosmosDBKey string
+param azureCosmosDBDatabaseName string = 'reddog'
+param kafkaBootstrapServers string
+param kafkaSecurityProtocol string = 'SASL_SSL'
+param kafkaSaslMechanism string = 'PLAIN'
+param kafkaTopicName string = 'reddog'
+param mysqlURL string
+@secure()
+param mysqlUser string = 'reddog'
+@secure()
+param mysqlPassword string
+param azureRedisHost string
+param azureRedisPort string = '6380'
+@secure()
+param azureRedisAccessKey string
+param azureStorageAccountName string
+@secure()
+param azureStorageAccountKey string
+param azureStorageEndpoint string
+@secure()
+param serviceBusConnectionString string
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08-01' = {
+var credentials = loadJsonContent('credentials.json')
+var envVariables = {
+    AZURECOSMOSDBURI: azureCosmosDBUri
+    AZURECOSMOSDBKEY: azureCosmosDBKey
+    AZURECOSMOSDBDATABASENAME: azureCosmosDBDatabaseName
+    KAFKASASLJAASCONFIG: credentials.kafkaSaslJaasConfig
+    KAFKABOOTSTRAPSERVERS: kafkaBootstrapServers
+    KAFKASECURITYPROTOCOL: kafkaSecurityProtocol
+    KAFKASASLMECHANISM: kafkaSaslMechanism
+    KAFKATOPICNAME: kafkaTopicName
+    MYSQLURL: mysqlURL
+    MYSQLUSER: mysqlUser
+    MYSQLPASSWORD: mysqlPassword
+    AZUREREDISHOST: azureRedisHost
+    AZUREREDISPORT: azureRedisPort
+    AZUREREDISACCESSKEY: azureRedisAccessKey
+    AZURESTORAGEACCOUNTNAME: azureStorageAccountName
+    AZURESTORAGEACCOUNTKEY: azureStorageAccountKey
+    AZURESTORAGEENDPOINT: azureStorageEndpoint
+    KAFKATOPICGROUP: 'order-service'
+    KAFKACONSUMERGROUPID: 'order-service'
+    SERVICEBUSCONNECTIONSTRING: serviceBusConnectionString
+    KAFKACOMPLETEDORDERSTOPIC: 'make-line-completed'
+}
+
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
   name: logAnalyticsName
   location: location
   properties: {
@@ -14,7 +64,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-08
   }
 }
 
-resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
+resource appInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: appInsightsName
   location: location
   kind: 'web'
@@ -26,8 +76,8 @@ resource appInsights 'Microsoft.Insights/components@2020-02-02-preview' = {
   }
 }
 
-resource springCloudService 'Microsoft.AppPlatform/Spring@2021-06-01-preview' = {
-  name: springCloudName
+resource springAppsService 'Microsoft.AppPlatform/Spring@2022-12-01' = {
+  name: springAppsName
   location: location
   sku: {
     name: 'S0'
@@ -35,17 +85,18 @@ resource springCloudService 'Microsoft.AppPlatform/Spring@2021-06-01-preview' = 
   }
 }
 
-resource springCloudMonitoringSettings 'Microsoft.AppPlatform/Spring/monitoringSettings@2020-07-01' = {
-  name: '${springCloudService.name}/default' // The only supported value is 'default'
+resource springAppsMonitoringSettings 'Microsoft.AppPlatform/Spring/monitoringSettings@2022-12-01' = {
+  name: 'default'
+  parent: springAppsService
   properties: {
     traceEnabled: true
     appInsightsInstrumentationKey: appInsights.properties.InstrumentationKey
   }
 }
 
-resource springCloudDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-01-preview' = {
+resource springAppsDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-preview' = {
   name: 'monitoring'
-  scope: springCloudService
+  scope: springAppsService
   properties: {
     workspaceId: logAnalyticsWorkspace.id
     logs: [
@@ -58,6 +109,38 @@ resource springCloudDiagnostics 'microsoft.insights/diagnosticSettings@2017-05-0
         }
       }
     ]
+  }
+}
+
+resource orderService 'Microsoft.AppPlatform/Spring/apps@2022-12-01' = {
+  name: 'order-service'
+  location: location
+  parent: springAppsService
+}
+
+resource orderServiceDeployment 'Microsoft.AppPlatform/Spring/apps/deployments@2022-12-01' = {
+  name: 'default'
+  sku: {
+    capacity: 2
+    name: 'S0'
+    tier: 'Standard'
+  }
+  parent: orderService
+  properties: {
+    // active: true
+    deploymentSettings: {
+      environmentVariables: envVariables
+      resourceRequests: {
+        cpu: '2'
+        memory: '4Gi'
+      }
+    }
+    source: {
+      version: '0.0.1-SNAPSHOT'
+      type: 'Jar'
+      // relativePath: './../../order-service/'
+      runtimeVersion: '17'
+    }
   }
 }
 

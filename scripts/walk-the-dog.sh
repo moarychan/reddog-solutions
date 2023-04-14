@@ -7,7 +7,7 @@ export USERNAME=$4
 export ADMIN_PASSWORD=$5
 export DEPLOY_TARGET=$6
 export INCLUDE_OPENAI=$7
-export UNIQUE_SERVICE_NAME=reddog$RANDOM$USERNAME$SUFFIX
+export UNIQUE_SERVICE_NAME=reddog16100$USERNAME$SUFFIX
 export AKS_NAME=aks$UNIQUE_SERVICE_NAME
 
 # show all params
@@ -29,7 +29,7 @@ check_for_azure_login
 # create RG
 echo ''
 echo "Creating Azure Resource Group"
-az group create --name $RG --location $LOCATION -o table
+# az group create --name $RG --location $LOCATION -o table
 
 # Bicep deployment
 echo ''
@@ -37,15 +37,15 @@ echo '****************************************************'
 echo 'Starting Bicep deployment of resources'
 echo '****************************************************'
 
-az deployment group create \
-    --name reddog-backing-services \
-    --mode Incremental \
-    --only-show-errors \
-    --resource-group $RG \
-    --template-file .././deploy/bicep/main.bicep \
-    --parameters uniqueServiceName=$UNIQUE_SERVICE_NAME \
-    --parameters includeOpenAI=$INCLUDE_OPENAI \
-    --parameters adminPassword=$ADMIN_PASSWORD -o table
+# az deployment group create \
+#    --name reddog-backing-services \
+#    --mode Incremental \
+#    --only-show-errors \
+#    --resource-group $RG \
+#    --template-file .././deploy/bicep/main.bicep \
+#    --parameters uniqueServiceName=$UNIQUE_SERVICE_NAME \
+#    --parameters includeOpenAI=$INCLUDE_OPENAI \
+#    --parameters adminPassword=$ADMIN_PASSWORD -o table
 
 # need error handling here
 
@@ -57,7 +57,7 @@ echo ''
 echo '****************************************************'
 echo "Collecting deployment outputs"
 echo '****************************************************'  
-az deployment group show -g $RG -n reddog-backing-services -o json --query properties.outputs > ".././outputs/$RG-bicep-outputs.json"
+# az deployment group show -g $RG -n reddog-backing-services -o json --query properties.outputs > ".././outputs/$RG-bicep-outputs.json"
 
 export COSMOS_URI=$(jq -r .cosmosUri.value .././outputs/$RG-bicep-outputs.json)
 export COSMOS_ACCOUNT=$(jq -r .cosmosAccountName.value .././outputs/$RG-bicep-outputs.json)
@@ -86,7 +86,8 @@ else
 fi
 
 # Write variables to files
-VARIABLES_FILE=".././outputs/var-$RG.sh"
+export VARIABLES_FILE=".././outputs/var-$RG.sh"
+# $CREDENTIALS_JSON_FILE=".././deploy/bicep/credentials.json"
 CONFIGMAP_FILE=".././outputs/config-map-$RG.yaml"
 
 printf "export AZURECOSMOSDBURI='%s'\n" $COSMOS_URI >> $VARIABLES_FILE
@@ -111,6 +112,26 @@ printf "export AZURESTORAGEENDPOINT='https://%s.blob.core.windows.net'\n" $STORA
 printf "export SERVICEBUSCONNECTIONSTRING='%s'\n" $SB_CONNECT_STRING >> $VARIABLES_FILE
 printf "export OPENAI_API_BASE='%s'\n" $OPENAI_API_BASE >> $VARIABLES_FILE
 printf "export OPENAI_API_KEY='%s'\n" $OPENAI_API_KEY >> $VARIABLES_FILE
+
+escape_double_quotes() {
+    local input=$1
+    input="${input//\"/\\\"}"
+    echo "$input"
+}
+
+echo "Write json file $CREDENTIALS_JSON_FILE"
+kafkasasljaasconfig_escape=$(escape_double_quotes "$EH_CONFIG")
+echo $kafkasasljaasconfig_escape
+
+# kafkasasljaasconfig_escape="test"
+
+# kafkasasljaasconfig_escape=$EH_CONFIG
+
+echo $kafkasasljaasconfig_escape
+
+jq -n --arg kafkasasljaasconfig_escape "$kafkasasljaasconfig_escape" \
+      "{ \"kafkaSaslJaasConfig\": \"$kafkasasljaasconfig_escape\" }" > ".././deploy/bicep/modules/credentials.json"
+echo "Finishing json file"
 
 printf "apiVersion: v1\n" >> $CONFIGMAP_FILE
 printf "kind: ConfigMap\n" >> $CONFIGMAP_FILE
