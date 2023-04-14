@@ -58,7 +58,7 @@ This deployment will require a bash shell of your choice. It will not work on Az
 
         ```bash
         export DEPLOY_UNIQUE_SUFFIX=reddog-xxx
-        source ./outputs/var-reddog-$DEPLOY_UNIQUE_SUFFIX.sh
+        source ./outputs/var-$DEPLOY_UNIQUE_SUFFIX.sh
         ```
 
 * Run microservices 
@@ -110,15 +110,15 @@ Follow the steps below to deploy Red Dog to your Azure Spring Apps instance depl
 
         ```bash
         export DEPLOY_UNIQUE_SUFFIX=reddog-xxx
-        source ./outputs/var-reddog-$DEPLOY_UNIQUE_SUFFIX.sh
+        source ./outputs/var-$DEPLOY_UNIQUE_SUFFIX.sh
         ```
 
 * Deploy order-service:
 
     ```bash
     # Set variables as needed
-    export RG=''
-    export SPRING_CLUSTER=''
+    export RG='reddog-v-shi-asa-22740'
+    export SPRING_CLUSTER='asareddog16100v-shi22740'
     export SERVICE_NAME='order-service'
 
     az spring app create \

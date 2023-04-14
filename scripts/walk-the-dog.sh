@@ -89,10 +89,18 @@ fi
 export VARIABLES_FILE=".././outputs/var-$RG.sh"
 CONFIGMAP_FILE=".././outputs/config-map-$RG.yaml"
 
+escape_double_quotes() {
+    local input=$1
+    input="${input//\"/\\\"}"
+    echo "$input"
+}
+
+kafkasasljaasconfig_escape=$(escape_double_quotes "$EH_CONFIG")
+
 printf "export AZURECOSMOSDBURI='%s'\n" $COSMOS_URI > $VARIABLES_FILE
 printf "export AZURECOSMOSDBKEY='%s'\n" $COSMOS_PRIMARY_RW_KEY >> $VARIABLES_FILE
 printf "export AZURECOSMOSDBDATABASENAME='reddog' \n" >> $VARIABLES_FILE
-printf "export KAFKASASLJAASCONFIG='${EH_CONFIG}'\n" >> $VARIABLES_FILE
+printf "export KAFKASASLJAASCONFIG='${kafkasasljaasconfig_escape}'\n" >> $VARIABLES_FILE
 printf "export KAFKABOOTSTRAPSERVERS='%s'\n" $EH_ENDPOINT >> $VARIABLES_FILE
 printf "export KAFKASECURITYPROTOCOL='SASL_SSL'\n" >> $VARIABLES_FILE
 printf "export KAFKASASLMECHANISM='PLAIN'\n" >> $VARIABLES_FILE
