@@ -89,13 +89,14 @@ fi
 export VARIABLES_FILE=".././outputs/var-$RG.sh"
 CONFIGMAP_FILE=".././outputs/config-map-$RG.yaml"
 
-escape_double_quotes() {
+escape_jaas_config() {
     local input=$1
     input="${input//\"/\\\"}"
+    input="${input//$/\\$}"
     echo "$input"
 }
 
-kafkasasljaasconfig_escape=$(escape_double_quotes "$EH_CONFIG")
+kafkasasljaasconfig_escape=$(escape_jaas_config "$EH_CONFIG")
 
 echo $kafkasasljaasconfig_escape
 
