@@ -62,22 +62,5 @@ resource springAppsDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01
   }
 }
 
-resource defaultConfigServer 'Microsoft.AppPlatform/Spring/configServers@2022-12-01' = {
-  name: 'default'
-  parent: springAppsService
-  properties: {
-    configServer: {
-      gitProperty: {
-        label: 'main'
-        searchPaths: [
-          'config-server'
-        ]
-        strictHostKeyChecking: false
-        uri: 'https://github.com/Azure/reddog-solutions.git'
-      }
-    }
-  }
-}
-
 output workspaceId string = logAnalyticsWorkspace.id
 output appInsightsInstrumentationKey string = appInsights.properties.InstrumentationKey

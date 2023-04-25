@@ -20,7 +20,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' = {
       name: 'standard'
     }
     softDeleteRetentionInDays: 90
-    tenantId: tenantId: subscription().tenantId
+    tenantId: subscription().tenantId
   }
 }
 

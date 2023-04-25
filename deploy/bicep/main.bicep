@@ -19,7 +19,7 @@ param deployLocation string = resourceGroup().location
 param adminPassword string
 
 // Top Level Resources
-module serviceBus 'modules/keyvault.bicep' = {
+module keyVault 'modules/keyvault.bicep' = {
   name: '${deployment().name}--keyvault'
   params: {
     keyVaultName: keyVaultName
