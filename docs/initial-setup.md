@@ -122,6 +122,16 @@ Follow the steps below to deploy Red Dog to your Azure Spring Apps instance depl
     export SPRING_CLUSTER=''
     ```
 
+* Setup Config Server on Azure Spring Apps instance
+  Set the default repository with below configuration:
+    - URI: `https://github.com/Azure/reddog-solutions`
+    - Label: `main`
+    - Search Path: `config-server`
+
+    ```bash
+    az spring config-server git set --resource-group $RG -n $SPRING_CLUSTER --label "main" --search-paths "config-server" --uri https://github.com/Azure/reddog-solutions
+    ```
+
 * Store passwords to Key Vault
 
     ```bash
@@ -155,12 +165,11 @@ Follow the steps below to deploy Red Dog to your Azure Spring Apps instance depl
         --env AZURECOSMOSDBURI=$AZURECOSMOSDBURI AZURECOSMOSDBDATABASENAME='reddog' KAFKABOOTSTRAPSERVERS=$KAFKABOOTSTRAPSERVERS KAFKASECURITYPROTOCOL='SASL_SSL' KAFKASASLMECHANISM='PLAIN' KAFKATOPICNAME='reddog' MYSQLURL=$MYSQLURL AZUREREDISHOST=$AZUREREDISHOST AZUREREDISPORT='6380' AZURESTORAGEACCOUNTNAME=$AZURESTORAGEACCOUNTNAME AZURESTORAGEENDPOINT=$AZURESTORAGEENDPOINT KAFKATOPICGROUP=$SERVICE_NAME KAFKACONSUMERGROUPID=$SERVICE_NAME KAFKACOMPLETEDORDERSTOPIC='make-line-completed' AZURE_KEY_VAULT_ENDPOINT=$AZURE_KEY_VAULT_ENDPOINT
   
     # Set the access policy for this app
-    APP_MANAGED_IDENTITY_OBJECT_ID=$(az spring app identity assign \
+    APP_MANAGED_IDENTITY_OBJECT_ID=$(az spring app identity show \
         --resource-group $RG \
         --name $SERVICE_NAME \
         --service $SPRING_CLUSTER \
-        --system-assigned \
-        --query identity.principalId \
+        --query principalId \
         --output tsv)
     az keyvault set-policy --resource-group $RG --name $AZURE_KEY_VAULT_NAME --object-id $APP_MANAGED_IDENTITY_OBJECT_ID --secret-permissions list get
   
