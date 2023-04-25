@@ -9,14 +9,12 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.microsoft.gbb.reddog</groupId>
-    <artifactId>loyalty-service</artifactId>
+    <artifactId>gateway-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>loyalty-service</name>
-    <description>loyalty-service</description>
+    <name>gateway-service</name>
+    <description>gateway-service</description>
     <properties>
         <java.version>17</java.version>
-        <opentelemetry.version>1.6.0</opentelemetry.version>
-        <spring-cloud-azure.version>4.7.0</spring-cloud-azure.version>
         <spring-cloud.version>2021.0.5</spring-cloud.version>
     </properties>
     <dependencies>
@@ -25,62 +23,13 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--Azure Spring Apps capabilities-->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bootstrap</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-ui</artifactId>
-            <version>1.6.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-data-redis-reactive</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-sleuth</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.kafka</groupId>
-            <artifactId>spring-kafka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
@@ -95,9 +44,28 @@
             <artifactId>spring-cloud-circuitbreaker-resilience4j</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.azure.spring</groupId>
-            <artifactId>spring-cloud-azure-starter-keyvault-secrets</artifactId>
-            <version>${spring-cloud-azure.version}</version>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-sleuth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
     <dependencyManagement>
@@ -111,21 +79,9 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
+
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${project.parent.version}</version>
-                <configuration>
-                    <excludes>
-                        <exclude>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                        </exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
             <plugin>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>3.5.0</version>

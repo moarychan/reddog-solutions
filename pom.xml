@@ -11,6 +11,7 @@
     
     <modules>
         <module>accounting-service</module>
+        <module>gateway-service</module>
         <module>loyalty-service</module>
         <module>makeline-service</module>
         <module>order-service</module>

@@ -2,7 +2,7 @@
 
 There are 2 ways to use this demo. You can deploy backing Azure services and run the Java microservices locally. This allows for local development and debugging. 
 
-Additionally, you can deploy everything to Azure and the microservices will be fully deployed to Azure Spring Apps or AKS.
+Additionally, you can deploy everything to Azure and the microservices will be fully deployed to Azure Spring Apps (Standard plan) or AKS.
 
 Instructions for both are below.
 
@@ -55,7 +55,8 @@ This deployment will require a bash shell of your choice. It will not work on Az
 
 * Setup local Config Server and Registry Server
   - Start the application `local-eureka-server`
-  - Start the application `local-eureka-server`
+  - Start the application `local-config-service`
+  - Start the application `local-gateway`
 
 * Setup local env variables 
     * Script creates an output with the variables needed. Source the file in your `./outputs` directory
@@ -108,12 +109,6 @@ Follow the steps below to deploy Red Dog to your Azure Spring Apps instance depl
 
 > Note: These manual steps will be replaced with the Bicep script going forward.
 
-* Setup Config Server on Azure Spring Apps instance
-  Set the default repository with below configuration:
-  - URI: `https://github.com/Azure/reddog-solutions`
-  - Label: `main`
-  - Search Path: `config-server`
-
 * Setup local env variables 
     * From the root directory of the repo 
     * Script creates an output with the variables needed. Source the file in your `./outputs` directory
@@ -142,11 +137,11 @@ Follow the steps below to deploy Red Dog to your Azure Spring Apps instance depl
     az keyvault secret set --vault-name $AZURE_KEY_VAULT_NAME --name "SERVICEBUSCONNECTIONSTRING" --value $SERVICEBUSCONNECTIONSTRING
     ```
 
-* Deploy order-service:
+* Deploy gateway-service:
 
     ```bash
     # Create and deploy app, it's required to execute multiple times for each app instances.
-    export SERVICE_NAME='order-service'
+    export SERVICE_NAME='gateway-service'
     az spring app create \
         -n $SERVICE_NAME \
         -s $SPRING_CLUSTER \
@@ -188,6 +183,7 @@ Follow the steps below to deploy Red Dog to your Azure Spring Apps instance depl
 * Deploy remaining microservices using the commands above. For each service, set the variable below and run the create/set-policy/deploy commands.
 
     ```bash
+    export SERVICE_NAME='order-service'
     export SERVICE_NAME='accounting-service'
     export SERVICE_NAME='makeline-service'
     export SERVICE_NAME='loyalty-service'
