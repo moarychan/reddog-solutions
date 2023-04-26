@@ -20,7 +20,7 @@ spring:
             - Path=/orders,/orders/completed,/orders/day,/orders/*/*,/orders/*/*/*
             - Method=GET
         - id: order-service
-          uri: lb://order-service
+          uri: http://order-service
           predicates:
             - Path=/order,/products,/product-images
         - id: receipt-generation-service
@@ -37,7 +37,7 @@ spring:
             - Path=/orders
             - Method=POST
         - id: makeline-service-2
-          uri: lb://makeline-service
+          uri: http://makeline-service
           predicates:
             - Path=/orders/*
             - Method=GET
