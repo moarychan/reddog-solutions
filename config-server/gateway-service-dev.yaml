@@ -23,7 +23,6 @@ spring:
           uri: lb://order-service
           predicates:
             - Path=/order,/products,/product-images
-            - Method=GET,POST
         - id: receipt-generation-service
           uri: lb://receipt-generation-service
           predicates:
@@ -47,18 +46,18 @@ spring:
           predicates:
             - Path=/orders/*,/orders/*/*
             - Method=DELETE
-        - id: virtual-worker-service-1
-          uri: lb://virtual-worker-service
+        - id: virtual-worker-1
+          uri: lb://virtual-worker
           predicates:
             - Path=/orders/complete
             - Method=POST
-        - id: virtual-worker-service-2
-          uri: lb://virtual-worker-service
+        - id: virtual-worker-2
+          uri: lb://virtual-worker
           predicates:
             - Path=/orders/*
             - Method=POST
-        - id: virtual-customers-service
-          uri: lb://virtual-customers-service
+        - id: virtual-customers
+          uri: lb://virtual-customers
           predicates:
             - Path=/simulate-orders
             - Method=POST
