@@ -15,7 +15,7 @@ spring:
           enabled: true
       routes:
         - id: accounting-service
-          uri: lb://accounting-service
+          uri: http://accounting-service
           predicates:
             - Path=/orders,/orders/completed,/orders/day,/orders/*/*,/orders/*/*/*
             - Method=GET
