@@ -17,15 +17,13 @@ spring:
         - id: accounting-service
           uri: lb://accounting-service
           predicates:
-            - Path=/accounting/**
-        - id: config-server
-          uri: lb://config-server
-          predicates:
-            - Path=/config/**
+            - Path=/orders,/orders/completed,/orders/day,/orders/*/*,/orders/*/*/*
+            - Method=GET
         - id: order-service
           uri: lb://order-service
           predicates:
-            - Path=/order/**
+            - Path=/order,/products,/product-images
+            - Method=GET,POST
         - id: receipt-generation-service
           uri: lb://receipt-generation-service
           predicates:
@@ -34,18 +32,36 @@ spring:
           uri: lb://loyalty-service
           predicates:
             - Path=/loyalty/**
-        - id: makeline-service
+        - id: makeline-service-1
           uri: lb://makeline-service
           predicates:
-            - Path=/makeline/**
-        - id: virtual-worker-service
+            - Path=/orders
+            - Method=POST
+        - id: makeline-service-2
+          uri: lb://makeline-service
+          predicates:
+            - Path=/orders/*
+            - Method=GET
+        - id: makeline-service-3
+          uri: lb://makeline-service
+          predicates:
+            - Path=/orders/*,/orders/*/*
+            - Method=DELETE
+        - id: virtual-worker-service-1
           uri: lb://virtual-worker-service
           predicates:
-            - Path=/virtual-worker/**
+            - Path=/orders/complete
+            - Method=POST
+        - id: virtual-worker-service-2
+          uri: lb://virtual-worker-service
+          predicates:
+            - Path=/orders/*
+            - Method=POST
         - id: virtual-customers-service
           uri: lb://virtual-customers-service
           predicates:
-            - Path=/virtual-customers/**
+            - Path=/simulate-orders
+            - Method=POST
         - id: ui
           uri: lb://ui
           predicates:
