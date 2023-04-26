@@ -138,7 +138,7 @@ Follow the steps below to deploy Red Dog to your Azure Spring Apps instance depl
     # It's required to execute one time for Spring Apps service instance.
     CURRENT_USER_OBJECT_ID=$(az ad signed-in-user show --query id --output tsv)
     az keyvault set-policy --resource-group $RG --name $AZURE_KEY_VAULT_NAME --object-id $CURRENT_USER_OBJECT_ID --secret-permissions set list get
-    az keyvault secret set --vault-name $AZURE_KEY_VAULT_NAME --name "KAFKASASLJAASCONFIG" --value "\"$KAFKASASLJAASCONFIG\""
+    az keyvault secret set --vault-name $AZURE_KEY_VAULT_NAME --name "KAFKASASLJAASCONFIG" --value "$KAFKASASLJAASCONFIG"
     az keyvault secret set --vault-name $AZURE_KEY_VAULT_NAME --name "AZURECOSMOSDBKEY" --value $AZURECOSMOSDBKEY
     az keyvault secret set --vault-name $AZURE_KEY_VAULT_NAME --name "MYSQLUSER" --value $MYSQLUSER
     az keyvault secret set --vault-name $AZURE_KEY_VAULT_NAME --name "MYSQLPASSWORD" --value $MYSQLPASSWORD
